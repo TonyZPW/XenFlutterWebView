@@ -1,11 +1,15 @@
 package io.flutter.plugins.webviewflutter;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -38,8 +42,11 @@ public class WebFileChooser extends Activity {
     }
 
     private void openAblum() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);//任意类型文件
-        intent.setType("*/*");
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);//任意类型文件
+        intent.setType("image/*");
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent,1);
     }
@@ -103,11 +110,11 @@ public class WebFileChooser extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //防止退出时，data没有数据，导致闪退。
-        Log.i("TAG","forResult");
+        Log.i("WebFileChooser","forResult");
         if(data != null){
             Uri uri = data.getData();
-            Log.i("TAG","! "+data.getClass()+" * "+data);
-            Log.i("TAG","URi "+uri);
+            Log.i("WebFileChooser","! "+data.getClass()+" * "+data);
+            Log.i("WebFileChooser","URi "+uri);
 
             if(uri==null){
                 //好像时部分机型会出现的问题，我的mix3就遇到了。
@@ -117,6 +124,10 @@ public class WebFileChooser extends Activity {
                 try {
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null,null));
+
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                        this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                    }
                     Uri[] results = new Uri[]{uri};
                     mUploadMessageArray.onReceiveValue(results);
                 }catch (Exception e){
@@ -124,16 +135,81 @@ public class WebFileChooser extends Activity {
                     mUploadMessageArray.onReceiveValue(null);
                 }
             }else{
+
                 Uri[] results = new Uri[]{uri};
                 mUploadMessageArray.onReceiveValue(results);
             }
 
         }else{
-            Log.i("TAG","onReceveValue");
+            Log.i("WebFileChooser","onReceveValue");
             mUploadMessageArray.onReceiveValue(null);
         }
         finish();
     }
 
+//    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+//
+//    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
+//            final Context context) {
+//        int currentAPIVersion = Build.VERSION.SDK_INT;
+//        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+//            if (this.checkSelfPermission(
+//                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (this.shouldShowRequestPermissionRationale(
+//                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//                    showDialog("External storage", context,
+//                            Manifest.permission.READ_EXTERNAL_STORAGE);
+//
+//                } else {
+//                    this
+//                            .requestPermissions(
+//                                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+//                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                }
+//                return false;
+//            } else {
+//                return true;
+//            }
+//
+//        } else {
+//            return true;
+//        }
+//    }
+//
+//    public void showDialog(final String msg, final Context context,
+//                           final String permission) {
+//        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+//        alertBuilder.setCancelable(true);
+//        alertBuilder.setTitle("Permission necessary");
+//        alertBuilder.setMessage(msg + " permission is necessary");
+//        alertBuilder.setPositiveButton(android.R.string.yes,
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        requestPermissions(
+//                                new String[] { permission },
+//                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//                    }
+//                });
+//        AlertDialog alert = alertBuilder.create();
+//        alert.show();
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String[] permissions, int[] grantResults) {
+//        switch (requestCode) {
+//            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+//                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    // do your stuff
+//                } else {
+//                    Toast.makeText(WebFileChooser.this, "Denied",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            default:
+//                super.onRequestPermissionsResult(requestCode, permissions,
+//                        grantResults);
+//        }
+//    }
 
 }
