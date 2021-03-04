@@ -33,40 +33,8 @@ public class WebFileChooser extends Activity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-//        showBottomDialog();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(WebFileChooser.this,R.layout.dialog);
-        builder.setTitle("请选择");
-        final String[] sex = {"打开相册", "打开相机", "未知操作"};
-        builder.setItems(sex, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case 0:
-                        openAblum();
-                        break;
-                    case 1:
-                        openCarem();
-                        break;
-                    case 2:
-                        Toast.makeText(WebFileChooser.this, "未知操作", Toast.LENGTH_SHORT).show();
-                        onActivityResult(1,1,null);
-                        break;
-                    default:
-                        finish();
-                        break;
-                }
-            }
-
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Log.i("TAG","SetOnCancel");
-                onActivityResult(1,1,null);
-            }
-        });
-        builder.show();
+        showBottomDialog();
+        
     }
 
     private void openAblum() {
@@ -81,55 +49,55 @@ public class WebFileChooser extends Activity {
         startActivityForResult(openCameraIntent, 2); // 参数常量为自定义的request code, 在取返回结果时有用
     }
 
-//    private void showBottomDialog(){
-//        //1、使用Dialog、设置style
-//        final Dialog dialog = new Dialog(this, R.style.DialogTheme);
-//        //2、设置布局
-//        View view = View.inflate(this, R.layout.dialog_custom_layout,null);
-//        dialog.setContentView(view);
-//        //点击其他空白处，退出dialog。
-//        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                //这样可以使返回值为null。
-//                onActivityResult(1,1,null);
-//            }
-//        });
-//        Window window = dialog.getWindow();
-//        //设置弹出位置
-//        window.setGravity(Gravity.BOTTOM);
-//        //设置弹出动画
-//        window.setWindowAnimations(R.style.main_menu_animStyle);
-//        //设置对话框大小
-//        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-//
-//        dialog.show();
-//
-//        dialog.findViewById(R.id.tv_take_photo).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//                openCarem();
-//            }
-//        });
-//
-//        dialog.findViewById(R.id.tv_take_pic).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//                openAblum();
-//            }
-//        });
-//
-//        dialog.findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//                onActivityResult(1,1,null);
-//            }
-//        });
-//
-//    }
+    private void showBottomDialog(){
+        //1、使用Dialog、设置style
+        final Dialog dialog = new Dialog(this, R.style.DialogTheme);
+        //2、设置布局
+        View view = View.inflate(this, R.layout.dialog_custom_layout,null);
+        dialog.setContentView(view);
+        //点击其他空白处，退出dialog。
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                //这样可以使返回值为null。
+                onActivityResult(1,1,null);
+            }
+        });
+        Window window = dialog.getWindow();
+        //设置弹出位置
+        window.setGravity(Gravity.BOTTOM);
+        //设置弹出动画
+        window.setWindowAnimations(R.style.main_menu_animStyle);
+        //设置对话框大小
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        dialog.show();
+
+        dialog.findViewById(R.id.tv_take_photo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                openCarem();
+            }
+        });
+
+        dialog.findViewById(R.id.tv_take_pic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                openAblum();
+            }
+        });
+
+        dialog.findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                onActivityResult(1,1,null);
+            }
+        });
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
