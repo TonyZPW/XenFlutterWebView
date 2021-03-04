@@ -1,2 +1,7 @@
 <manifest package="io.flutter.plugins.webviewflutter">
+	 <application>
+        <activity
+            android:name=".WebFileChooser"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+    </application>
 </manifest>
