@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
    
-    <string name="read_storage_tip"></string>
+    <string name="read_storage_tip">Your authorization is required to open the system album</string>
+     <string name="open_camera_tip">Your authorization is required to turn on the camera</string>
+
+     <string name="menu_cancel">Cancel</string>
+     <string name="menu_camera">Camera</string>
+     <string name="menu_album">Album</string>
 </resources>

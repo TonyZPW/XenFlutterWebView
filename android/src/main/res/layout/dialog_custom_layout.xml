@@ -9,7 +9,7 @@
         android:id="@+id/tv_take_photo"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="拍摄"
+        android:text="@string/menu_camera"
         android:gravity="center"
         android:textSize="16sp"
         android:textColor="@android:color/background_dark"/>
@@ -23,7 +23,7 @@
         android:id="@+id/tv_take_pic"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="从手机相册选择"
+        android:text="@string/menu_album"
         android:gravity="center"
         android:textSize="16sp"
         android:textColor="@android:color/background_dark"/>
@@ -37,7 +37,7 @@
         android:id="@+id/tv_cancel"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="取消"
+        android:text="@string/menu_cancel"
         android:gravity="center"
         android:textSize="16sp"
         android:textColor="@android:color/background_dark"/>
