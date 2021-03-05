@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xen_app_name" translatable="false">Xen Cap</string>
+    <string name="facebook_app_id">2634439983509101</string>
+    <string name="fb_login_protocol_scheme">fb2634439983509101</string>
+    <string name="deeplink_host">xencapital.com</string>
+    <string name="xen_is_running">Xen Cap is running</string>
+    <string name="xen_noti_channel_name">Messages</string>
+</resources>

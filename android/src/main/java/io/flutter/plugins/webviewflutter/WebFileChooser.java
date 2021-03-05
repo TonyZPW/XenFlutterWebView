@@ -38,7 +38,6 @@ public class WebFileChooser extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         showBottomDialog();
-        
     }
 
     private void openAblum() {
@@ -83,16 +82,31 @@ public class WebFileChooser extends Activity {
         dialog.findViewById(R.id.tv_take_photo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 dialog.dismiss();
-                openCarem();
+
+                Boolean rst = checkPermissionOpenCamera(view.getContext());
+
+                if(rst){
+                    openCarem();
+                }
+
             }
         });
 
         dialog.findViewById(R.id.tv_take_pic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 dialog.dismiss();
-                openAblum();
+
+                Boolean rst = checkPermissionREAD_EXTERNAL_STORAGE(view.getContext());
+
+                if(rst){
+
+                    openAblum();
+                }
+
             }
         });
 
@@ -147,69 +161,115 @@ public class WebFileChooser extends Activity {
         finish();
     }
 
-//    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
-//
-//    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
-//            final Context context) {
-//        int currentAPIVersion = Build.VERSION.SDK_INT;
-//        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
-//            if (this.checkSelfPermission(
-//                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (this.shouldShowRequestPermissionRationale(
-//                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+
+    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (this.checkSelfPermission(
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (this.shouldShowRequestPermissionRationale(
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
 //                    showDialog("External storage", context,
 //                            Manifest.permission.READ_EXTERNAL_STORAGE);
-//
-//                } else {
-//                    this
-//                            .requestPermissions(
-//                                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
-//                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//                }
-//                return false;
-//            } else {
-//                return true;
-//            }
-//
-//        } else {
-//            return true;
-//        }
-//    }
-//
-//    public void showDialog(final String msg, final Context context,
-//                           final String permission) {
-//        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-//        alertBuilder.setCancelable(true);
-//        alertBuilder.setTitle("Permission necessary");
-//        alertBuilder.setMessage(msg + " permission is necessary");
-//        alertBuilder.setPositiveButton(android.R.string.yes,
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        requestPermissions(
-//                                new String[] { permission },
-//                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//                    }
-//                });
-//        AlertDialog alert = alertBuilder.create();
-//        alert.show();
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String[] permissions, int[] grantResults) {
-//        switch (requestCode) {
-//            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-//                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    // do your stuff
-//                } else {
-//                    Toast.makeText(WebFileChooser.this, "Denied",
-//                            Toast.LENGTH_SHORT).show();
-//                }
-//                break;
-//            default:
-//                super.onRequestPermissionsResult(requestCode, permissions,
-//                        grantResults);
-//        }
-//    }
+
+                    requestPermissions(
+                            new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+
+                } else {
+                    this
+                            .requestPermissions(
+                                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_OPEN_CAMERA = 456;
+
+    public boolean checkPermissionOpenCamera(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (this.checkSelfPermission(
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (this.shouldShowRequestPermissionRationale(
+                        Manifest.permission.CAMERA)) {
+//                    showDialog("External storage", context,
+//                            Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    requestPermissions(
+                            new String[] { Manifest.permission.CAMERA },
+                            MY_PERMISSIONS_REQUEST_OPEN_CAMERA);
+
+                } else {
+                    this
+                            .requestPermissions(
+                                    new String[] { Manifest.permission.CAMERA },
+                                    MY_PERMISSIONS_REQUEST_OPEN_CAMERA);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialog(final String msg, final Context context,
+                           final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // do your stuff
+
+                } else {
+                    Toast.makeText(WebFileChooser.this, getString(R.string.read_storage_tip),
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case MY_PERMISSIONS_REQUEST_OPEN_CAMERA:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // do your stuff
+
+                } else {
+                    Toast.makeText(WebFileChooser.this, getString(R.string.open_camera_tip),
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,
+                        grantResults);
+        }
+    }
 
 }
