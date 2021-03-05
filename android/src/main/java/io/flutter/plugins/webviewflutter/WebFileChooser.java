@@ -251,19 +251,23 @@ public class WebFileChooser extends Activity {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // do your stuff
-
+                    openAblum();
                 } else {
                     Toast.makeText(WebFileChooser.this, getString(R.string.read_storage_tip),
                             Toast.LENGTH_SHORT).show();
+
+                    onActivityResult(1,1,null);
                 }
                 break;
             case MY_PERMISSIONS_REQUEST_OPEN_CAMERA:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // do your stuff
-
+                    openCarem();
                 } else {
                     Toast.makeText(WebFileChooser.this, getString(R.string.open_camera_tip),
                             Toast.LENGTH_SHORT).show();
+
+                    onActivityResult(1,1,null);
                 }
                 break;
             default:
