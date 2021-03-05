@@ -47,12 +47,12 @@ public class WebFileChooser extends Activity {
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent,1);
+        startActivityForResult(intent,MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
     }
 
     private void openCarem(){
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //系统常量， 启动相机的关键
-        startActivityForResult(openCameraIntent, 2); // 参数常量为自定义的request code, 在取返回结果时有用
+        startActivityForResult(openCameraIntent, MY_PERMISSIONS_REQUEST_OPEN_CAMERA); // 参数常量为自定义的request code, 在取返回结果时有用
     }
 
     private void showBottomDialog(){
@@ -139,9 +139,12 @@ public class WebFileChooser extends Activity {
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null,null));
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    if(requestCode != MY_PERMISSIONS_REQUEST_OPEN_CAMERA){
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        }
                     }
+
                     Uri[] results = new Uri[]{uri};
                     mUploadMessageArray.onReceiveValue(results);
                 }catch (Exception e){
@@ -150,8 +153,10 @@ public class WebFileChooser extends Activity {
                 }
             }else{
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                if(requestCode != MY_PERMISSIONS_REQUEST_OPEN_CAMERA){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
                 }
                 Uri[] results = new Uri[]{uri};
                 mUploadMessageArray.onReceiveValue(results);
