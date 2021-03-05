@@ -139,9 +139,9 @@ public class WebFileChooser extends Activity {
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null,null));
 
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                        this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
                     Uri[] results = new Uri[]{uri};
                     mUploadMessageArray.onReceiveValue(results);
                 }catch (Exception e){
@@ -150,6 +150,9 @@ public class WebFileChooser extends Activity {
                 }
             }else{
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    this.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
                 Uri[] results = new Uri[]{uri};
                 mUploadMessageArray.onReceiveValue(results);
             }
