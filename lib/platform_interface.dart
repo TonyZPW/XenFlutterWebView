@@ -317,6 +317,27 @@ abstract class WebViewPlatformController {
     throw UnimplementedError(
         "WebView getScrollY is not implemented on the current platform");
   }
+
+  /// Load html file from local path
+  ///
+  /// `url` must not be null.
+  ///
+  /// Throws an ArgumentError if `url` is not a valid URL string.
+  Future<void> loadAssetHtmlFile(String url) {
+    throw UnimplementedError(
+        "WebView loadAssetHtmlFile is not implemented on the current platform");
+  }
+
+  /// Load html file from local path
+  ///
+  /// `url` must not be null.
+  ///
+  /// Throws an ArgumentError if `url` is not a valid URL string.
+  Future<void> loadLocalHtmlFile(String url) {
+    throw UnimplementedError(
+        "WebView loadLocalHtmlFile is not implemented on the current platform");
+  }
+
 }
 
 /// A single setting for configuring a WebViewPlatform which may be absent.
