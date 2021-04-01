@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f0cbef9b-1bce-4e90-b019-75cfdc5dfdb1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/android/src/main/java/io/flutter/plugins/webviewflutter/FlutterWebView.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/io/flutter/plugins/webviewflutter/FlutterWebView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Classes/FLTWebViewFlutterPlugin.m" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/FLTWebViewFlutterPlugin.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Classes/FlutterWebView.h" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/FlutterWebView.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Classes/FlutterWebView.m" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/FlutterWebView.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/platform_interface.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/platform_interface.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/webview_method_channel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/webview_method_channel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/webview_flutter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/webview_flutter.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
