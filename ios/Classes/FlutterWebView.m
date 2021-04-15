@@ -8,22 +8,12 @@
 
 @implementation FLTWebViewFactory {
   NSObject<FlutterBinaryMessenger>* _messenger;
-  NSObject<FlutterPluginRegistrar>* _registrar;
 }
 
 - (instancetype)initWithMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
   self = [super init];
   if (self) {
     _messenger = messenger;
-  }
-  return self;
-}
-
-- (instancetype)initWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  self = [super init];
-  if (self) {
-   _registrar = registrar;
-   _messenger = registrar.messenger;
   }
   return self;
 }
@@ -38,7 +28,7 @@
   FLTWebViewController* webviewController = [[FLTWebViewController alloc] initWithFrame:frame
                                                                          viewIdentifier:viewId
                                                                               arguments:args
-                                                                        registrar:_messenger];
+                                                                        binaryMessenger:_messenger];
   return webviewController;
 }
 
@@ -74,65 +64,6 @@
   // The set of registered JavaScript channel names.
   NSMutableSet* _javaScriptChannelNames;
   FLTWKNavigationDelegate* _navigationDelegate;
-
-  NSObject<FlutterPluginRegistrar>* _registrar;
-  FLTWKProgressionDelegate* _progressionDelegate;
-}
-
-
-- (instancetype)initWithFrame:(CGRect)frame
-               viewIdentifier:(int64_t)viewId
-                    arguments:(id _Nullable)args
-              registrar:(nonnull NSObject<FlutterPluginRegistrar>*)registrar {
-  if (self = [super init]) {
-    _viewId = viewId;
-
-    _registrar = registrar;
-    NSString* channelName = [NSString stringWithFormat:@"plugins.flutter.io/webview_%lld", viewId];
-    _channel = [FlutterMethodChannel methodChannelWithName:channelName
-                                           binaryMessenger:_registrar.messenger];
-    _javaScriptChannelNames = [[NSMutableSet alloc] init];
-
-    WKUserContentController* userContentController = [[WKUserContentController alloc] init];
-    if ([args[@"javascriptChannelNames"] isKindOfClass:[NSArray class]]) {
-      NSArray* javaScriptChannelNames = args[@"javascriptChannelNames"];
-      [_javaScriptChannelNames addObjectsFromArray:javaScriptChannelNames];
-      [self registerJavaScriptChannels:_javaScriptChannelNames controller:userContentController];
-    }
-
-    NSDictionary<NSString*, id>* settings = args[@"settings"];
-
-    WKWebViewConfiguration* configuration = [[WKWebViewConfiguration alloc] init];
-    configuration.userContentController = userContentController;
-    [self updateAutoMediaPlaybackPolicy:args[@"autoMediaPlaybackPolicy"]
-                        inConfiguration:configuration];
-
-    _webView = [[FLTWKWebView alloc] initWithFrame:frame configuration:configuration];
-    _navigationDelegate = [[FLTWKNavigationDelegate alloc] initWithChannel:_channel];
-    _webView.UIDelegate = self;
-    _webView.navigationDelegate = _navigationDelegate;
-    __weak __typeof__(self) weakSelf = self;
-    [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
-      [weakSelf onMethodCall:call result:result];
-    }];
-
-    if (@available(iOS 11.0, *)) {
-      _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-      if (@available(iOS 13.0, *)) {
-        _webView.scrollView.automaticallyAdjustsScrollIndicatorInsets = NO;
-      }
-    }
-
-    [self applySettings:settings];
-    // TODO(amirh): return an error if apply settings failed once it's possible to do so.
-    // https://github.com/flutter/flutter/issues/36228
-
-    NSString* initialUrl = args[@"initialUrl"];
-    if ([initialUrl isKindOfClass:[NSString class]]) {
-      [self loadUrl:initialUrl];
-    }
-  }
-  return self;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -188,12 +119,6 @@
   return self;
 }
 
-- (void)dealloc {
-  if (_progressionDelegate != nil) {
-    [_progressionDelegate stopObservingProgress:_webView];
-  }
-}
-
 - (UIView*)view {
   return _webView;
 }
@@ -203,13 +128,7 @@
     [self onUpdateSettings:call result:result];
   } else if ([[call method] isEqualToString:@"loadUrl"]) {
     [self onLoadUrl:call result:result];
-  }
-  else if ([[call method] isEqualToString:@"loadAssetHtmlFile"]) {
-      [self onLoadAssetHtmlFile:call result:result];
-    } else if ([[call method] isEqualToString:@"loadLocalHtmlFile"]) {
-      [self onLoadLocalHtmlFile:call result:result];
-    }
-  else if ([[call method] isEqualToString:@"canGoBack"]) {
+  } else if ([[call method] isEqualToString:@"canGoBack"]) {
     [self onCanGoBack:call result:result];
   } else if ([[call method] isEqualToString:@"canGoForward"]) {
     [self onCanGoForward:call result:result];
@@ -259,28 +178,6 @@
         errorWithCode:@"loadUrl_failed"
               message:@"Failed parsing the URL"
               details:[NSString stringWithFormat:@"Request was: '%@'", [call arguments]]]);
-  } else {
-    result(nil);
-  }
-}
-
-- (void)onLoadAssetHtmlFile:(FlutterMethodCall*)call result:(FlutterResult)result {
-  NSString* url = [call arguments];
-  if (![self loadAssetHtmlFile:url]) {
-    result([FlutterError errorWithCode:@"loadAssetHtmlFile_failed"
-                               message:@"Failed parsing the URL"
-                               details:[NSString stringWithFormat:@"URL was: '%@'", url]]);
-  } else {
-    result(nil);
-  }
-}
-
-- (void)onLoadLocalHtmlFile:(FlutterMethodCall*)call result:(FlutterResult)result {
-  NSString* url = [call arguments];
-  if (![self loadLocalHtmlFile:url]) {
-    result([FlutterError errorWithCode:@"loadAssetHtmlFile_failed"
-                               message:@"Failed parsing the URL"
-                               details:[NSString stringWithFormat:@"URL was: '%@'", url]]);
   } else {
     result(nil);
   }
@@ -426,16 +323,7 @@
     } else if ([key isEqualToString:@"hasNavigationDelegate"]) {
       NSNumber* hasDartNavigationDelegate = settings[key];
       _navigationDelegate.hasDartNavigationDelegate = [hasDartNavigationDelegate boolValue];
-    }
-    else if ([key isEqualToString:@"hasProgressTracking"]) {
-          NSNumber* hasProgressTrackingValue = settings[key];
-          bool hasProgressTracking = [hasProgressTrackingValue boolValue];
-          if (hasProgressTracking) {
-            _progressionDelegate = [[FLTWKProgressionDelegate alloc] initWithWebView:_webView
-                                                                             channel:_channel];
-          }
-        }
-    else if ([key isEqualToString:@"debuggingEnabled"]) {
+    } else if ([key isEqualToString:@"debuggingEnabled"]) {
       // no-op debugging is always enabled on iOS.
     } else if ([key isEqualToString:@"gestureNavigationEnabled"]) {
       NSNumber* allowsBackForwardNavigationGestures = settings[key];
@@ -521,58 +409,6 @@
   NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
   [request setAllHTTPHeaderFields:headers];
   [_webView loadRequest:request];
-  return true;
-}
-
-- (bool)loadAssetHtmlFile:(NSString*)url {
-  NSArray* array = [url componentsSeparatedByString:@"?"];
-  NSString* pathString = [array objectAtIndex:0];
-  NSLog(@"%@%@", @"pathString: ", pathString);
-  NSString* key = [_registrar lookupKeyForAsset:pathString];
-  NSURL* baseURL = [[NSBundle mainBundle] URLForResource:key withExtension:nil];
-  if (!baseURL) {
-    return false;
-  }
-  NSURL* newUrl = baseURL;
-  if ([array count] > 1) {
-    NSString* queryString = [array objectAtIndex:1];
-    NSLog(@"%@%@", @"queryString: ", queryString);
-    NSString* queryPart = [NSString stringWithFormat:@"%@%@", @"?", queryString];
-    NSLog(@"%@%@", @"queryPart: ", queryPart);
-    newUrl = [NSURL URLWithString:queryPart relativeToURL:baseURL];
-  }
-  if (@available(iOS 9.0, *)) {
-    [_webView loadFileURL:newUrl allowingReadAccessToURL:[NSURL URLWithString:@"file:///"]];
-  } else {
-    return false;
-  }
-  return true;
-}
-
-- (bool)loadLocalHtmlFile:(NSString*)url {
-  NSArray* array = [url componentsSeparatedByString:@"?"];
-  NSString* pathString = [array objectAtIndex:0];
-  NSLog(@"%@%@", @"pathString: ", pathString);
-  NSString* key = [_registrar lookupKeyForAsset:pathString];
-  NSURL* baseURL = [[NSBundle mainBundle] URLForResource:key withExtension:nil];
-  if (!baseURL) {
-    [_webView loadFileURL:[NSURL fileURLWithPath:pathString]
-        allowingReadAccessToURL:[NSURL fileURLWithPath:pathString]];
-    return true;
-  }
-  NSURL* newUrl = baseURL;
-  if ([array count] > 1) {
-    NSString* queryString = [array objectAtIndex:1];
-    NSLog(@"%@%@", @"queryString: ", queryString);
-    NSString* queryPart = [NSString stringWithFormat:@"%@%@", @"?", queryString];
-    NSLog(@"%@%@", @"queryPart: ", queryPart);
-    newUrl = [NSURL URLWithString:queryPart relativeToURL:baseURL];
-  }
-  if (@available(iOS 9.0, *)) {
-    [_webView loadFileURL:newUrl allowingReadAccessToURL:[NSURL URLWithString:@"file:///"]];
-  } else {
-    return false;
-  }
   return true;
 }
 
