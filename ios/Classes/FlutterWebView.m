@@ -76,7 +76,7 @@
   FLTWKNavigationDelegate* _navigationDelegate;
 
   NSObject<FlutterPluginRegistrar>* _registrar;
-  //FLTWKProgressionDelegate* _progressionDelegate;
+  FLTWKProgressionDelegate* _progressionDelegate;
 }
 
 
@@ -188,11 +188,11 @@
   return self;
 }
 
-//- (void)dealloc {
-//  if (_progressionDelegate != nil) {
-//    [_progressionDelegate stopObservingProgress:_webView];
-//  }
-//}
+- (void)dealloc {
+  if (_progressionDelegate != nil) {
+    [_progressionDelegate stopObservingProgress:_webView];
+  }
+}
 
 - (UIView*)view {
   return _webView;
@@ -427,14 +427,14 @@
       NSNumber* hasDartNavigationDelegate = settings[key];
       _navigationDelegate.hasDartNavigationDelegate = [hasDartNavigationDelegate boolValue];
     }
-    /*else if ([key isEqualToString:@"hasProgressTracking"]) {
+    else if ([key isEqualToString:@"hasProgressTracking"]) {
           NSNumber* hasProgressTrackingValue = settings[key];
           bool hasProgressTracking = [hasProgressTrackingValue boolValue];
           if (hasProgressTracking) {
             _progressionDelegate = [[FLTWKProgressionDelegate alloc] initWithWebView:_webView
                                                                              channel:_channel];
           }
-        }*/
+        }
     else if ([key isEqualToString:@"debuggingEnabled"]) {
       // no-op debugging is always enabled on iOS.
     } else if ([key isEqualToString:@"gestureNavigationEnabled"]) {
